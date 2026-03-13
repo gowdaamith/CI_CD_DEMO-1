@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage("Checkout Code"){
       steps {
-        git 'https://github.com/gowdaamith/CI_CD_DEMO-1'
+        git branch: 'main', url: 'https://github.com/gowdaamith/CI_CD_DEMO-1'
       }
     }
     stage('Install Dependencies'){
