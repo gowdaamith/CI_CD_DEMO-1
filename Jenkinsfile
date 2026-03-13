@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    ndoejs 'NodeJS'
+    nodejs 'NodeJS'
   }
   stages {
     stage("Checkout Code"){
