@@ -1,8 +1,8 @@
 pipeline {
-  agent {
-    docker {
-      node:18
-    }
+  agent any
+
+  tools {
+    ndoejs 'NodeJS'
   }
   stages {
     stage("Checkout Code"){
