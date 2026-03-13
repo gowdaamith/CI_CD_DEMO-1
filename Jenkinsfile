@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      node:18
+    }
+  }
   stages {
     stage("Checkout Code"){
       steps {
