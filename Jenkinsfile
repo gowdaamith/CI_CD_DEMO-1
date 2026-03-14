@@ -5,6 +5,7 @@ pipeline {
   }
   environment {
       DOCKER_IMAGE = "gowdaamith/ci-cd-demo1:${BUILD_NUMBER}"
+      SONAR_SERVER = "sonarqube-server"
   }
   stages{
     stage('Checkout'){
@@ -17,6 +18,24 @@ pipeline {
         sh 'npm ci'
       }
     }
+    stage('Code Scan -SonarQube'){
+      steps {
+        withSonarQubeEnv("${SONAR_SERVER}"){
+          sh '''
+          npx sonar-scanner \
+          -Dsonar.projectKey=ci-cd-demo \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.login=$SONAR_AUTH_TOKEN
+          '''
+        }
+      }
+    }
+    stage('Dependency scan'){
+      step{
+        sh 'npm audit'
+      }
+    }
     stage('Run tests'){
       steps {
         sh 'npm test'
@@ -26,6 +45,10 @@ pipeline {
       steps {
         sh 'docker build -t $DOCKER_IMAGE . '
       }
+    }
+    stage('Image Scannign'){
+      steps {
+        sh 'trivy image $DOCKER_IMAGE '
     }
     stage('Push Docker images'){
       steps {
@@ -41,3 +64,6 @@ pipeline {
     }
   }
 }
+
+
+
