@@ -136,8 +136,10 @@ pipeline {
   }
 }
 
+                    
+                    STAGE 2
 
- Step 6: Next we will add the Docker into the CI pipeline
+Next we will add the Docker into the CI pipeline
  ----------------------------------------------------------
  Now the pipelien flow will be 
  GitHub Push
@@ -152,3 +154,84 @@ Build Docker Image
      ↓
 Push Image to DockerHub
 
+Step 1 : Create a Dockerfile 
+-------------------------------
+Create a dockerfile in the same path as the jenkins file
+
+Step 2: Test the Docker locally
+--------------------------------
+Before the jenkins uses Docker ,Test it 
+
+Build the image : docker build -t ci-cd-demo
+Run the container: docker run -d -p 3000:3000 ci-cd-demo
+Curl in the localhost : curl http://localhost:3000
+
+Step 3: createa  dockerhub repository 
+-------------------------------------
+Go to the dockerhub  and create repository like : ci-cd-demo
+                           or 
+While push in the image if the repository doesn't exits the repo will be automatically created
+
+Step 4: Add the docker login to Jenkins 
+---------------------------------------
+In Jenkins:Go to the manage Jenkknis
+Here Go to :
+Manage Credentials
+Global
+Add Credentials
+
+And choose : Username and Password  
+
+
+Step 5 - Update the Jenkins file 
+--------------------------------------
+Now update the Jenkins file 
+
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "yourdockerhubusername/ci-cd-demo"
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git branch:'main',url: 'https://github.com/yourusername/ci-cd-demo.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                    sh 'docker push $DOCKER_IMAGE'
+                }
+            }
+        }
+    }
+}
