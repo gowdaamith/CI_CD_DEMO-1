@@ -49,6 +49,7 @@ pipeline {
     stage('Image Scannign'){
       steps {
         sh 'trivy image $DOCKER_IMAGE '
+      }
     }
     stage('Push Docker images'){
       steps {
@@ -64,6 +65,4 @@ pipeline {
     }
   }
 }
-
-
 
