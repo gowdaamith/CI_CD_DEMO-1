@@ -32,7 +32,7 @@ pipeline {
       }
     }
     stage('Dependency scan'){
-      step{
+      steps {
         sh 'npm audit'
       }
     }
