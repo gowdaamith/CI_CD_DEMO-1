@@ -235,3 +235,91 @@ pipeline {
         }
     }
 }
+
+There was some problems in running the jenkins inside teh container like not able to access docker if the docker was configured then the git was missing so we used our host server to install the jenkins and ran the pipeline 
+
+The problem faced with the jenkins on the host server is : 
+*Unable to use the npm install to the file permission so from  next if you face the same we will be checking the "file permission "
+
+
+Next we will be doing the security part of the jenkins pipeline :
+
+If you want to use the "SonarQube "
+YOU must have the SonarQube 
+>> docker run -d -p  9000:9000 sonarqube
+Access it at:
+>> http://localhost:9000
+
+Create a SonarQube Token:
+Inside the Sonarqube : Go to the profile -> My account -> Security -> Generate a token 
+>> the token will be genearated and it will be used by the jenkins
+
+Install the Sonarqube plugin in the Jenkins 
+Configure the Sonarqube in the Jenkins 
+Go to:
+Manage Jenkins
+>> Configuration System
+>> Sonarqube servers
+
+Add 
+>> Name : sonar-server
+>> URL: http://localhost:9000
+>> Token: <your token>  stored in the jenkins credentials from where it will be automatically taken  
+
+Install the Sonar Scanner on Jenkins Agent 
+>> The scanner must exit on the Jenkins machine
+
+Check if th SonarQube exits or not
+>> sonar-scanner -v
+If not intalled use:
+>>  npm install -g sonar-scanner
+
+or 
+Configure in the Jenkins :
+Manage Jenkins 
+->Global tool configuration 
+->SonarQube Scanner
+
+TRIVY 
+-----------
+Trivy is a another security tool which is used for the  scanning of the images 
+This scanes : 
+*dependencies 
+*libraries
+*Config files
+
+We can scan during development by using this command without or even before running the container
+>> trivy fs .
+
+Filter of trivy :(Trivy has several severity level)
+| Severity | Meaning        |
+| -------- | -------------- |
+| UNKNOWN  | Unknown risk   |
+| LOW      | Minor          |
+| MEDIUM   | Moderate       |
+| HIGH     | Serious        |
+| CRITICAL | Very dangerous |
+
+--exit-code 1
+_________________
+This is very important for CI/CD pipelines 
+It tells Trivy 
+*If vulnerabilities are found -> return exit code 1
+*Exit code 1 = failure 
+
+In Jenkins : 
+| Exit Code | Meaning |
+| --------- | ------- |
+| 0         | Success |
+| 1         | Failure |
+
+So if the command is like this : sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL gowdaamith/app:1.0' 
+
+and the severity of the code is HIGH and Critical  the the pipeline stops 
+
+
+| Tool                   | Purpose                          |
+| ---------------------- | -------------------------------- |
+| Trivy                  | Container vulnerability scanning |
+| SonarQube              | Code quality + security          |
+| OWASP Dependency-Check | Library vulnerabilities          |
