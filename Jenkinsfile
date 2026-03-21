@@ -63,6 +63,29 @@ pipeline {
         }
       }
     }
+    stage("Update the manifest Repo"){
+        steps{
+            withCredentials([usernamePassword(
+                credentialsId: 'github-creds',
+                usernameVaraible: 'GIT_USER',
+                passwordVariable: 'GIT_PASS'
+            )]){
+               sh '''
+               rm -rf manifests
+               git clone https://github.com/gowdaamith/CI_CD_DEMO-1-Manifests.git
+               cd manifests/k8s
+               sed -i 's|images:.*|images: gowdaamith/ci-cd-demo:latest|' deployment.yaml
+               cd ..
+               git config user.email "amithgowda1772@gmail.com"
+               git config user.name "gowdaamith"
+               git add .
+               git commit -m "Updated images to latest build "
+               git push
+               '''
+           }
+        }
+    }   
+    
   }
 }
 
