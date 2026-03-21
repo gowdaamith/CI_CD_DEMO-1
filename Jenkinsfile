@@ -72,7 +72,7 @@ pipeline {
             )]){
                sh '''
                rm -rf manifests
-               git clone https://github.com/gowdaamith/CI_CD_DEMO-1-Manifests.git
+                git clone https://$GIT_USER:$GIT_PASS@github.com/gowdaamith/ci-cd-demo-manifests.git
                cd manifests/k8s
                sed -i 's|images:.*|images: gowdaamith/ci-cd-demo:latest|' deployment.yaml
                cd ..
