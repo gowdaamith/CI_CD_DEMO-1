@@ -71,7 +71,7 @@ pipeline {
                 passwordVariable: 'GIT_PASS'
             )]){
                sh '''
-               rm -rf CI_CD_DEMO-1-Manifests.git
+               rm -rf CI_CD_DEMO-1-Manifests
                 git clone https://$GIT_USER:$GIT_PASS@github.com/gowdaamith/CI_CD_DEMO-1-Manifests.git
                cd k8s
                sed -i 's|images:.*|images: gowdaamith/ci-cd-demo:latest|' deployment.yaml
