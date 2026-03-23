@@ -72,8 +72,8 @@ pipeline {
             )]){
                sh '''
                rm -rf CI_CD_DEMO-1-Manifests
-                git clone https://$GIT_USER:$GIT_PASS@github.com/gowdaamith/CI_CD_DEMO-1-Manifests.git
-               cd k8s
+               git clone https://$GIT_USER:$GIT_PASS@github.com/gowdaamith/CI_CD_DEMO-1-Manifests.git
+               cd CI_CD_DEMO-1-Manifests/k8s
                sed -i 's|images:.*|images: gowdaamith/ci-cd-demo:latest|' deployment.yaml
                cd ..
                git config user.email "amithgowda1772@gmail.com"
