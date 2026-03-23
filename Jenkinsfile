@@ -4,7 +4,7 @@ pipeline {
     nodejs "NodeJS"
   }
   environment {
-      DOCKER_IMAGE = "gowdaamith/ci-cd-demo1:${BUILD_NUMBER}"
+      DOCKER_IMAGE = "gowdaamith/ci-cd-demo1:latest"
       SONAR_SERVER = "sonarqube-server"
   }
   stages{
