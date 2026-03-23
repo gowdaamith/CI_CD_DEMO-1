@@ -66,7 +66,7 @@ pipeline {
     stage("Update the manifest Repo"){
         steps{
             withCredentials([usernamePassword(
-                credentialsId: 'github-creds',
+                credentialsId: 'github-api-1',
                 usernameVaraible: 'GIT_USER',
                 passwordVariable: 'GIT_PASS'
             )]){
